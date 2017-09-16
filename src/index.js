@@ -30,12 +30,14 @@ function create ($vm, devtoolHook) {
  */
 function update ($vm) {
   if ($vm.__replaceState) return false
-  store.state = getStates($vm)
-  store.getters = getGetters($vm)
-  devtoolHook.emit('vuex:mutation', {
-    type: 'UPDATE-DATA',
-    // TODO: 以后最好加个 可以监测到是谁在变化
-    payload: undefined
+  delay(() => {
+    store.state = getStates($vm)
+    store.getters = getGetters($vm)
+    devtoolHook.emit('vuex:mutation', {
+      type: 'UPDATE-DATA',
+      // TODO: 以后最好加个 可以监测到是谁在变化
+      payload: undefined
+    })
   })
 }
 /**
