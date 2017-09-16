@@ -12,7 +12,6 @@ const store = {
   state: {},
   getters: {}
 }
-window.store = store
 
 const comments = {}
 
@@ -39,16 +38,25 @@ function update ($vm) {
     payload: undefined
   })
 }
-
+/**
+ * 获取最终的 key 值
+ * @param {string} key 键值
+ * @param {string} path  路径
+ * @return {string} 最终的 key 值
+ */
 function getFinalKey (key, path = '') {
   path += key
   const comment = getFinalComment(path.split('.'))
   if (comment !== '') {
-    return `${key}(${comment})`
+    return `${key} (${comment})`
   }
   return key
 }
-
+/**
+ * 获取最终的注释
+ * @param {string} paths 路径
+ * @return {string} 注释
+ */
 function getFinalComment (paths) {
   if (paths.length === 1) {
     let comment = comments[paths[0]]

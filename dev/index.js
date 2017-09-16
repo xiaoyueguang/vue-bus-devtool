@@ -18,10 +18,6 @@ const bus = new Vue({
   computed: {
     num () {
       return this.i + '次'
-    },
-    forbar () {
-      const forbar = this.for.bar
-      return forbar ? '是' : '否'
     }
   }
 })
@@ -45,8 +41,7 @@ const comments = {
       _comment: '第二层for',
       bar: '第三层bar'
     }
-  },
-  forbar: 'computed forbar'
+  }
 }
 
 devtools(bus, comments)

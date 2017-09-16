@@ -91,10 +91,6 @@ const bus = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default
   computed: {
     num () {
       return this.i + '次'
-    },
-    forbar () {
-      const forbar = this.for.bar
-      return forbar ? '是' : '否'
     }
   }
 })
@@ -118,8 +114,7 @@ const comments = {
       _comment: '第二层for',
       bar: '第三层bar'
     }
-  },
-  forbar: 'computed forbar'
+  }
 }
 
 Object(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */])(bus, comments)
@@ -371,7 +366,6 @@ const store = {
   state: {},
   getters: {}
 }
-window.store = store
 
 const comments = {}
 
@@ -398,16 +392,25 @@ function update ($vm) {
     payload: undefined
   })
 }
-
+/**
+ * 获取最终的 key 值
+ * @param {string} key 键值
+ * @param {string} path  路径
+ * @return {string} 最终的 key 值
+ */
 function getFinalKey (key, path = '') {
   path += key
   const comment = getFinalComment(path.split('.'))
   if (comment !== '') {
-    return `${key}(${comment})`
+    return `${key} (${comment})`
   }
   return key
 }
-
+/**
+ * 获取最终的注释
+ * @param {string} paths 路径
+ * @return {string} 注释
+ */
 function getFinalComment (paths) {
   if (paths.length === 1) {
     let comment = comments[paths[0]]
