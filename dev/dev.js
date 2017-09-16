@@ -79,7 +79,7 @@ process.env.NODE_ENV = 'development'
 const bus = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
   data () {
     return {
-      i: 0,
+      // i: 0,
       test: {
         test: false,
         for: {
@@ -109,7 +109,17 @@ let open = true
 // }, 300)
 
 const comments = {
-  i: '计数'
+  i: '计数',
+  num: '次数',
+  test: {
+    _comment: '第一层',
+    test: '测试啊',
+    for: '第二层'
+    // {
+    //   _comment: '第二层',
+    //   bar: '测试'
+    // }
+  }
 }
 
 Object(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */])(bus, comments)
@@ -399,7 +409,6 @@ function getFinalKey (key, path = '') {
 }
 
 function getFinalComment (paths) {
-  return comments[paths[0]]
   if (paths.length === 1) {
     let comment = comments[paths[0]]
     return isObject(comment) ? comment._comment : comment || ''
@@ -428,7 +437,7 @@ function getStates ($vm, path = '') {
   const states = {}
   for (let key in $vm._data) {
     if (isObject($vm._data[key])) {
-      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, key + '.')
+      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
     } else {
       states[getFinalKey(key, path)] = $vm._data[key]
     }

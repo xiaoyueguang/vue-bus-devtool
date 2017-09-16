@@ -50,7 +50,6 @@ function getFinalKey (key, path = '') {
 }
 
 function getFinalComment (paths) {
-  return comments[paths[0]]
   if (paths.length === 1) {
     let comment = comments[paths[0]]
     return isObject(comment) ? comment._comment : comment || ''
@@ -79,7 +78,7 @@ function getStates ($vm, path = '') {
   const states = {}
   for (let key in $vm._data) {
     if (isObject($vm._data[key])) {
-      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, key + '.')
+      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
     } else {
       states[getFinalKey(key, path)] = $vm._data[key]
     }

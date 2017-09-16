@@ -6,7 +6,7 @@ process.env.NODE_ENV = 'development'
 const bus = new Vue({
   data () {
     return {
-      i: 0,
+      // i: 0,
       test: {
         test: false,
         for: {
@@ -36,7 +36,17 @@ let open = true
 // }, 300)
 
 const comments = {
-  i: '计数'
+  i: '计数',
+  num: '次数',
+  test: {
+    _comment: '第一层',
+    test: '测试啊',
+    for: '第二层'
+    // {
+    //   _comment: '第二层',
+    //   bar: '测试'
+    // }
+  }
 }
 
 devtools(bus, comments)
