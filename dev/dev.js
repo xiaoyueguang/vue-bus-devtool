@@ -60,78 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_index__ = __webpack_require__(4);
-
-
-
-process.env.NODE_ENV = 'development'
-
-const bus = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
-  data () {
-    return {
-      i: 0,
-      for: {
-        bar: false,
-        for: {
-          bar: 123
-        }
-      }
-    }
-  },
-  computed: {
-    num () {
-      return this.i + '次'
-    }
-  }
-})
-window.bus = bus
-let open = true
-setInterval(() => {
-  if (bus.i < 5 && open) {
-    bus.i ++
-  } else {
-    open = false
-  }
-}, 300)
-
-const comments = {
-  i: '计数',
-  num: '次数',
-  for: {
-    _comment: '第一层for',
-    bar: '第二层bar',
-    for: {
-      _comment: '第二层for',
-      bar: '第三层bar'
-    }
-  }
-}
-
-Object(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */])(bus, comments)
-
-new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
-  el: '#app',
-  computed: {
-    num () {
-      return bus.num
-    }
-  }
-})
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
-
-/***/ }),
-/* 1 */,
-/* 2 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -321,184 +254,72 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 4 */
+/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-// vue-devtool 全局钩子函数
-const devtoolHook =
-  typeof window !== 'undefined' &&
-  window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_index__ = __webpack_require__(4);
 
-const toString = Object.prototype.toString
 
-const isObject = obj => toString.call(obj) === '[object Object]'
 
-const store = {
-  state: {},
-  getters: {}
-}
+process.env.NODE_ENV = 'development'
 
-const comments = {}
-
-/**
- * 初始化
- * @param {vm} $vm
- */
-function create ($vm, devtoolHook) {
-  store.state = getStates($vm)
-  store.getters = getGetters($vm)
-  devtoolHook.emit('vuex:init', store)
-}
-/**
- * 更新
- * @param {vm} $vm
- */
-function update ($vm) {
-  if ($vm.__replaceState) return false
-  store.state = getStates($vm)
-  store.getters = getGetters($vm)
-  devtoolHook.emit('vuex:mutation', {
-    type: 'UPDATE-DATA',
-    // TODO: 以后最好加个 可以监测到是谁在变化
-    payload: undefined
-  })
-}
-/**
- * 获取最终的 key 值
- * @param {string} key 键值
- * @param {string} path  路径
- * @return {string} 最终的 key 值
- */
-function getFinalKey (key, path = '') {
-  path += key
-  const comment = getFinalComment(path.split('.'))
-  if (comment !== '') {
-    return `${key} (${comment})`
-  }
-  return key
-}
-/**
- * 获取最终的注释
- * @param {string} paths 路径
- * @return {string} 注释
- */
-function getFinalComment (paths) {
-  if (paths.length === 1) {
-    let comment = comments[paths[0]]
-    return isObject(comment) ? comment._comment : comment || ''
-  }
-
-  let comment = ''
-  let current = comments
-  let i = 0
-  while (++i) {
-    current = current[paths[i - 1]] || ''
-    if (i === paths.length) break
-  }
-
-  return isObject(current) ? current._comment : current
-
-}
-
-/**
- * 获取对应的 states
- * @param {vm}
- * @param {string} path 路径
- * @return {states}
- */
-function getStates ($vm, path = '') {
-  const states = {}
-  for (let key in $vm._data) {
-    if (isObject($vm._data[key])) {
-      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
-    } else {
-      states[getFinalKey(key, path)] = $vm._data[key]
+const bus = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
+  data () {
+    return {
+      i: 0,
+      for: {
+        bar: false,
+        for: {
+          bar: 123
+        }
+      }
+    }
+  },
+  computed: {
+    num () {
+      return this.i + '次'
     }
   }
-  return states
-}
-
-/**
- * 获取对应的 getters
- * @param {vm}
- * @return {getters}
- */
-function getGetters ($vm) {
-  const getters = {}
-  for (let key in $vm.$options.computed) {
-    getters[getFinalKey(key)] = $vm.$options.computed[key].call($vm)
+})
+window.bus = bus
+let open = true
+setInterval(() => {
+  if (bus.i < 5 && open) {
+    bus.i ++
+  } else {
+    open = false
   }
-  return getters
-}
-/**
- * 开启时间旅行
- * @param {vm} $vm
- */
-function openTravel ($vm) {
-  devtoolHook.on('vuex:travel-to-state', targetState => {
-    // 是否替换
-    $vm.__replaceState = true
-    // 替换 state来实现时间旅行
-    for (let key in targetState) {
-      $vm[key] = targetState[key]
+}, 300)
+
+const comments = {
+  i: '计数',
+  num: '次数',
+  for: {
+    _comment: '第一层for',
+    bar: '第二层bar',
+    for: {
+      _comment: '第二层for',
+      bar: '第三层bar'
     }
-    $vm.__replaceState = false
-  })
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (function ($vm, $comments) {
-  if (devtoolHook && process.env.NODE_ENV !== 'production') {
-    Object.assign(comments, $comments)
-
-    delay(() => create($vm, devtoolHook))
-
-    openTravel($vm)
-
-    $vm.$watch(function () { return $vm._data }, () => {
-      update($vm, devtoolHook)
-    }, {
-      deep: true,
-      sync: true
-    })
   }
-});
-
-function delay (fn) {
-  setTimeout(fn)
 }
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
+
+// devtool(bus, comments)
+__WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */], {
+  vm: bus,
+  comments
+})
+
+window.vm = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
+  el: '#app'
+})
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10693,7 +10514,195 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0), __webpack_require__(3)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+// vue-devtool 全局钩子函数
+const devtoolHook =
+  typeof window !== 'undefined' &&
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+
+const toString = Object.prototype.toString
+
+const isObject = obj => toString.call(obj) === '[object Object]'
+
+const store = {
+  state: {},
+  getters: {}
+}
+
+const _comments = {}
+
+/**
+ * 初始化
+ * @param {vm} $vm
+ */
+function create ($vm) {
+  store.state = getStates($vm)
+  store.getters = getGetters($vm)
+  devtoolHook.emit('vuex:init', store)
+}
+/**
+ * 更新
+ * @param {vm} $vm
+ */
+function update ($vm) {
+  if ($vm.__replaceState) return false
+  delay(() => {
+    store.state = getStates($vm)
+    store.getters = getGetters($vm)
+    devtoolHook.emit('vuex:mutation', {
+      type: 'UPDATE-DATA',
+      // TODO: 以后最好加个 可以监测到是谁在变化
+      payload: undefined
+    })
+  })
+}
+/**
+ * 获取最终的 key 值
+ * @param {string} key 键值
+ * @param {string} path  路径
+ * @return {string} 最终的 key 值
+ */
+function getFinalKey (key, path = '') {
+  path += key
+  const comment = getFinalComment(path.split('.'))
+  if (comment !== '') {
+    return `${key} (${comment})`
+  }
+  return key
+}
+/**
+ * 获取最终的注释
+ * @param {string} paths 路径
+ * @return {string} 注释
+ */
+function getFinalComment (paths) {
+  if (paths.length === 1) {
+    let comment = _comments[paths[0]]
+    return isObject(comment) ? comment._comment : comment || ''
+  }
+
+  let comment = ''
+  let current = _comments
+  let i = 0
+  while (++i) {
+    current = current[paths[i - 1]] || ''
+    if (i === paths.length) break
+  }
+
+  return isObject(current) ? current._comment : current
+
+}
+
+/**
+ * 获取对应的 states
+ * @param {vm}
+ * @param {string} path 路径
+ * @return {states}
+ */
+function getStates ($vm, path = '') {
+  const states = {}
+  for (let key in $vm._data) {
+    if (isObject($vm._data[key])) {
+      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
+    } else {
+      states[getFinalKey(key, path)] = $vm._data[key]
+    }
+  }
+  return states
+}
+
+/**
+ * 获取对应的 getters
+ * @param {vm}
+ * @return {getters}
+ */
+function getGetters ($vm) {
+  const getters = {}
+  for (let key in $vm.$options.computed) {
+    getters[getFinalKey(key)] = $vm.$options.computed[key].call($vm)
+  }
+  return getters
+}
+/**
+ * 开启时间旅行
+ * @param {vm} $vm
+ */
+function openTravel ($vm) {
+  devtoolHook.on('vuex:travel-to-state', targetState => {
+    // 是否替换
+    $vm.__replaceState = true
+    // 替换 state来实现时间旅行
+    for (let key in targetState) {
+      $vm[key] = targetState[key]
+    }
+    $vm.__replaceState = false
+  })
+}
+
+/**
+ * 延迟执行
+ * @param {function} fn
+ */
+function delay (fn) {
+  setTimeout(fn)
+}
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  install (Vue, {vm, comments}) {
+    // 检测$bus 是否被占用. 并自动将 vm 附加到$bus 上
+    !Vue.prototype.$bus && (Vue.prototype.$bus = vm)
+    if (devtoolHook && process.env.NODE_ENV !== 'production') {
+      Object.assign(_comments, comments)
+  
+      delay(() => create(vm))
+  
+      openTravel(vm)
+  
+      vm.$watch(function () { return vm._data }, () => {
+        update(vm)
+      }, {
+        deep: true,
+        sync: true
+      })
+    }
+  }
+});
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);

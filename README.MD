@@ -32,12 +32,17 @@ const comments = {
   msg: '消息'
 }
 
-devtool(bus, comments)
+Vue.use(devtool, {
+  // bus
+  vm: bus,
+  // 注释
+  coments: comments
+})
 ```
 
-devtool能接受两个参数, 第一个为`vue`生成的实例, 第二个可选, 为注释对象
+`devtool`插件通过 `Vue.use`的方式来使用. 传入`vm`和`注释`
 
-注释将会自动附加在`vue-devtools`的`Vuex`面板中.
+注释将会自动附加在`vue-devtools`的`Vuex`面板中. 并且将传入的`vm`实例附加到`Vue`的原型下
 
 ## 效果图如下所示
 

@@ -1,5 +1,5 @@
 import Vue from 'vue/dist/vue.esm.js'
-import devtools from '../src/index'
+import devtool from '../src/index'
 
 process.env.NODE_ENV = 'development'
 
@@ -44,13 +44,12 @@ const comments = {
   }
 }
 
-devtools(bus, comments)
+// devtool(bus, comments)
+Vue.use(devtool, {
+  vm: bus,
+  comments
+})
 
-new Vue({
-  el: '#app',
-  computed: {
-    num () {
-      return bus.num
-    }
-  }
+window.vm = new Vue({
+  el: '#app'
 })

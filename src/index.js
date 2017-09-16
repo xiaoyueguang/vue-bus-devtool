@@ -13,13 +13,13 @@ const store = {
   getters: {}
 }
 
-const comments = {}
+const _comments = {}
 
 /**
  * 初始化
  * @param {vm} $vm
  */
-function create ($vm, devtoolHook) {
+function create ($vm) {
   store.state = getStates($vm)
   store.getters = getGetters($vm)
   devtoolHook.emit('vuex:init', store)
@@ -61,12 +61,12 @@ function getFinalKey (key, path = '') {
  */
 function getFinalComment (paths) {
   if (paths.length === 1) {
-    let comment = comments[paths[0]]
+    let comment = _comments[paths[0]]
     return isObject(comment) ? comment._comment : comment || ''
   }
 
   let comment = ''
-  let current = comments
+  let current = _comments
   let i = 0
   while (++i) {
     current = current[paths[i - 1]] || ''
@@ -123,23 +123,31 @@ function openTravel ($vm) {
   })
 }
 
-export default function ($vm, $comments) {
-  if (devtoolHook && process.env.NODE_ENV !== 'production') {
-    Object.assign(comments, $comments)
-
-    delay(() => create($vm, devtoolHook))
-
-    openTravel($vm)
-
-    $vm.$watch(function () { return $vm._data }, () => {
-      update($vm, devtoolHook)
-    }, {
-      deep: true,
-      sync: true
-    })
-  }
-}
-
+/**
+ * 延迟执行
+ * @param {function} fn
+ */
 function delay (fn) {
   setTimeout(fn)
+}
+
+export default {
+  install (Vue, {vm, comments}) {
+    // 检测$bus 是否被占用. 并自动将 vm 附加到$bus 上
+    !Vue.prototype.$bus && (Vue.prototype.$bus = vm)
+    if (devtoolHook && process.env.NODE_ENV !== 'production') {
+      Object.assign(_comments, comments)
+  
+      delay(() => create(vm))
+  
+      openTravel(vm)
+  
+      vm.$watch(function () { return vm._data }, () => {
+        update(vm)
+      }, {
+        deep: true,
+        sync: true
+      })
+    }
+  }
 }
