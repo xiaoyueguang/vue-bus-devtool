@@ -6,9 +6,9 @@ process.env.NODE_ENV = 'development'
 const bus = new Vue({
   data () {
     return {
-      // i: 0,
-      test: {
-        test: false,
+      i: 0,
+      for: {
+        bar: false,
         for: {
           bar: 123
         }
@@ -16,37 +16,37 @@ const bus = new Vue({
     }
   },
   computed: {
-    // num () {
-    //   return this.i + '次'
-    // },
-    // testMsg () {
-    //   const test = this.test.test
-    //   return test ? '是' : '否'
-    // }
+    num () {
+      return this.i + '次'
+    },
+    forbar () {
+      const forbar = this.for.bar
+      return forbar ? '是' : '否'
+    }
   }
 })
 window.bus = bus
 let open = true
-// setInterval(() => {
-//   if (bus.i < 5 && open) {
-//     bus.i ++
-//   } else {
-//     open = false
-//   }
-// }, 300)
+setInterval(() => {
+  if (bus.i < 5 && open) {
+    bus.i ++
+  } else {
+    open = false
+  }
+}, 300)
 
 const comments = {
   i: '计数',
   num: '次数',
-  test: {
-    _comment: '第一层',
-    test: '测试啊',
-    for: '第二层'
-    // {
-    //   _comment: '第二层',
-    //   bar: '测试'
-    // }
-  }
+  for: {
+    _comment: '第一层for',
+    bar: '第二层bar',
+    for: {
+      _comment: '第二层for',
+      bar: '第三层bar'
+    }
+  },
+  forbar: 'computed forbar'
 }
 
 devtools(bus, comments)

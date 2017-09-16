@@ -59,7 +59,6 @@ function getFinalComment (paths) {
   let current = comments
   let i = 0
   while (++i) {
-    console.log(current, paths, i)
     current = current[paths[i - 1]] || ''
     if (i === paths.length) break
   }
