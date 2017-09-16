@@ -1,34 +1,68 @@
+
+// vue-devtool 全局钩子函数
 const devtoolHook =
   typeof window !== 'undefined' &&
   window.__VUE_DEVTOOLS_GLOBAL_HOOK__
 
-/**
- * 执行 更新 vue-devtools 的 vuex 模块
- * @param {vm} $vm 传入的 BUS
- * @param {devtool} devtoolHook vue-devtool钩子函数
- */
-function exec ($vm, devtoolHook) {
-  const state = $vm._data
-  const getters = {}
+const store = {
+  state: {},
+  getters: {}
+}
 
+/**
+ * 初始化
+ * @param {vm} $vm
+ */
+function create ($vm, devtoolHook) {
+  store.state = $vm._data
+  store.getters = getGetters($vm)
+  devtoolHook.emit('vuex:init', store)
+}
+/**
+ * 更新
+ * @param {vm} $vm
+ */
+function update ($vm) {
+  if ($vm.__replaceState) return false
+  store.getters = getGetters($vm)
+  devtoolHook.emit('vuex:mutation', {type: 'UPDATE-DATA', payload: undefined}, {})
+}
+
+/**
+ * 获取对应的 getters
+ * @param {vm} $vm
+ */
+function getGetters ($vm) {
+  const getters = {}
   for (let key in $vm.$options.computed) {
     getters[key] = $vm.$options.computed[key].call($vm)
   }
-
-  const store = {
-    state,
-    getters
-  }
-  devtoolHook && devtoolHook.emit('vuex:init', store)
+  return getters
+}
+/**
+ * 开启时间旅行
+ * @param {vm} $vm
+ */
+function openTravel ($vm) {
+  devtoolHook.on('vuex:travel-to-state', targetState => {
+    // 是否替换
+    $vm.__replaceState = true
+    // 替换 state来实现时间旅行
+    for (let key in targetState) {
+      $vm[key] = targetState[key]
+    }
+    $vm.__replaceState = false
+  })
 }
 
 export default function ($vm) {
-
   if (devtoolHook && process.env.NODE_ENV !== 'production') {
+    delay(() => create($vm, devtoolHook))
+
+    openTravel($vm)
+
     $vm.$watch(function () { return $vm._data }, () => {
-      setTimeout(() => {
-        exec($vm, devtoolHook)
-      })
+      update($vm, devtoolHook)
     }, {
       deep: true,
       sync: true
@@ -36,3 +70,6 @@ export default function ($vm) {
   }
 }
 
+function delay (fn) {
+  setTimeout(fn)
+}
