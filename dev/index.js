@@ -6,26 +6,40 @@ process.env.NODE_ENV = 'development'
 const bus = new Vue({
   data () {
     return {
-      i: 0
+      i: 0,
+      test: {
+        test: false,
+        for: {
+          bar: 123
+        }
+      }
     }
   },
   computed: {
-    num () {
-      return this.i + '次'
-    }
+    // num () {
+    //   return this.i + '次'
+    // },
+    // testMsg () {
+    //   const test = this.test.test
+    //   return test ? '是' : '否'
+    // }
   }
 })
 window.bus = bus
 let open = true
-setInterval(() => {
-  if (bus.i < 5 && open) {
-    bus.i ++
-  } else {
-    open = false
-  }
-}, 300)
+// setInterval(() => {
+//   if (bus.i < 5 && open) {
+//     bus.i ++
+//   } else {
+//     open = false
+//   }
+// }, 300)
 
-devtools(bus)
+const comments = {
+  i: '计数'
+}
+
+devtools(bus, comments)
 
 new Vue({
   el: '#app',

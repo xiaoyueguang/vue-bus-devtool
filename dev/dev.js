@@ -79,26 +79,40 @@ process.env.NODE_ENV = 'development'
 const bus = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
   data () {
     return {
-      i: 0
+      i: 0,
+      test: {
+        test: false,
+        for: {
+          bar: 123
+        }
+      }
     }
   },
   computed: {
-    num () {
-      return this.i + '次'
-    }
+    // num () {
+    //   return this.i + '次'
+    // },
+    // testMsg () {
+    //   const test = this.test.test
+    //   return test ? '是' : '否'
+    // }
   }
 })
 window.bus = bus
 let open = true
-setInterval(() => {
-  if (bus.i < 5 && open) {
-    bus.i ++
-  } else {
-    open = false
-  }
-}, 300)
+// setInterval(() => {
+//   if (bus.i < 5 && open) {
+//     bus.i ++
+//   } else {
+//     open = false
+//   }
+// }, 300)
 
-Object(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */])(bus)
+const comments = {
+  i: '计数'
+}
+
+Object(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */])(bus, comments)
 
 new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */]({
   el: '#app',
@@ -339,17 +353,24 @@ const devtoolHook =
   typeof window !== 'undefined' &&
   window.__VUE_DEVTOOLS_GLOBAL_HOOK__
 
+const toString = Object.prototype.toString
+
+const isObject = obj => toString.call(obj) === '[object Object]'
+
 const store = {
   state: {},
   getters: {}
 }
+window.store = store
+
+const comments = {}
 
 /**
  * 初始化
  * @param {vm} $vm
  */
 function create ($vm, devtoolHook) {
-  store.state = $vm._data
+  store.state = getStates($vm)
   store.getters = getGetters($vm)
   devtoolHook.emit('vuex:init', store)
 }
@@ -359,18 +380,71 @@ function create ($vm, devtoolHook) {
  */
 function update ($vm) {
   if ($vm.__replaceState) return false
+  store.state = getStates($vm)
   store.getters = getGetters($vm)
-  devtoolHook.emit('vuex:mutation', {type: 'UPDATE-DATA', payload: undefined}, {})
+  devtoolHook.emit('vuex:mutation', {
+    type: 'UPDATE-DATA',
+    // TODO: 以后最好加个 可以监测到是谁在变化
+    payload: undefined
+  })
+}
+
+function getFinalKey (key, path = '') {
+  path += key
+  const comment = getFinalComment(path.split('.'))
+  if (comment !== '') {
+    return `${key}(${comment})`
+  }
+  return key
+}
+
+function getFinalComment (paths) {
+  return comments[paths[0]]
+  if (paths.length === 1) {
+    let comment = comments[paths[0]]
+    return isObject(comment) ? comment._comment : comment || ''
+  }
+
+  let comment = ''
+  let current = comments
+  let i = 0
+  while (++i) {
+    console.log(current, paths, i)
+    current = current[paths[i - 1]] || ''
+    if (i === paths.length) break
+  }
+
+  return isObject(current) ? current._comment : current
+
+}
+
+/**
+ * 获取对应的 states
+ * @param {vm}
+ * @param {string} path 路径
+ * @return {states}
+ */
+function getStates ($vm, path = '') {
+  const states = {}
+  for (let key in $vm._data) {
+    if (isObject($vm._data[key])) {
+      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, key + '.')
+    } else {
+      states[getFinalKey(key, path)] = $vm._data[key]
+    }
+  }
+  return states
 }
 
 /**
  * 获取对应的 getters
- * @param {vm} $vm
+ * @param {vm}
+ * @return {getters}
  */
 function getGetters ($vm) {
   const getters = {}
   for (let key in $vm.$options.computed) {
-    getters[key] = $vm.$options.computed[key].call($vm)
+    getters[getFinalKey(key)] = $vm.$options.computed[key].call($vm)
   }
   return getters
 }
@@ -390,8 +464,10 @@ function openTravel ($vm) {
   })
 }
 
-/* harmony default export */ __webpack_exports__["a"] = (function ($vm) {
+/* harmony default export */ __webpack_exports__["a"] = (function ($vm, $comments) {
   if (devtoolHook && process.env.NODE_ENV !== 'production') {
+    Object.assign(comments, $comments)
+
     delay(() => create($vm, devtoolHook))
 
     openTravel($vm)
