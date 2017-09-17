@@ -3,7 +3,7 @@ import {isObject} from './helper'
 /**
  * 私有注释对象
  */
-export const _comments = {}
+export const _comments = Object.create(null)
 
 /**
  * 获取最终的注释
@@ -26,3 +26,9 @@ export function getFinalComment (paths) {
 
   return isObject(current) ? current._comment : current
 }
+
+export function aa () {
+  
+}
+
+window.aa = aa

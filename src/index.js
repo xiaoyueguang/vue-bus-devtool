@@ -10,7 +10,8 @@ import devtoolHook from './devtool'
 import {
   store,
   updateStore,
-  keyMap
+  keyMap,
+  setStateFromTravel
 } from './store'
 
 import {_comments} from './comments'
@@ -36,7 +37,8 @@ function update ($vm) {
 
     devtoolHook.emit('vuex:mutation', {
       type: 'UPDATE-DATA',
-      payload: objDiff(before, after)
+      // payload: objDiff(before, after)
+      payload: undefined
     })
   })
 }
@@ -50,9 +52,11 @@ function openTravel ($vm) {
     // 是否替换
     $vm.__replaceState = true
     // 替换 state来实现时间旅行
-    for (let key in targetState) {
-      $vm[keyMap[key]] = targetState[key]
-    }
+    // for (let key in targetState) {
+    //   // TODO:
+    //   $vm[keyMap[key]] = targetState[key]
+    // }
+    setStateFromTravel($vm, targetState)
     $vm.__replaceState = false
   })
 }
@@ -65,8 +69,8 @@ export default {
       Object.assign(_comments, comments)
   
       delay(() => create(vm))
-  
-      openTravel(vm)
+      // TODO: 这里替换会有点问题
+      // openTravel(vm)
   
       vm.$watch(function () { return vm._data }, () => {
         update(vm)

@@ -10581,7 +10581,8 @@ function update ($vm) {
 
     __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:mutation', {
       type: 'UPDATE-DATA',
-      payload: Object(__WEBPACK_IMPORTED_MODULE_0__helper__["c" /* objDiff */])(before, after)
+      // payload: objDiff(before, after)
+      payload: undefined
     })
   })
 }
@@ -10595,9 +10596,11 @@ function openTravel ($vm) {
     // 是否替换
     $vm.__replaceState = true
     // 替换 state来实现时间旅行
-    for (let key in targetState) {
-      $vm[__WEBPACK_IMPORTED_MODULE_2__store__["a" /* keyMap */][key]] = targetState[key]
-    }
+    // for (let key in targetState) {
+    //   // TODO:
+    //   $vm[keyMap[key]] = targetState[key]
+    // }
+    Object(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* setStateFromTravel */])($vm, targetState)
     $vm.__replaceState = false
   })
 }
@@ -10610,8 +10613,8 @@ function openTravel ($vm) {
       Object.assign(__WEBPACK_IMPORTED_MODULE_3__comments__["a" /* _comments */], comments)
   
       Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => create(vm))
-  
-      openTravel(vm)
+      // TODO: 这里替换会有点问题
+      // openTravel(vm)
   
       vm.$watch(function () { return vm._data }, () => {
         update(vm)
@@ -10631,7 +10634,7 @@ function openTravel ($vm) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = delay;
-/* harmony export (immutable) */ __webpack_exports__["c"] = objDiff;
+/* unused harmony export objDiff */
 /* unused harmony export isEmptyObject */
 
 /**
@@ -10712,12 +10715,16 @@ const devtoolHook =
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["c"] = updateStore;
+/* unused harmony export setKeyMap */
 /* unused harmony export getFinalKey */
+/* unused harmony export makeCommentKey */
+/* harmony export (immutable) */ __webpack_exports__["a"] = setStateFromTravel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__comments__ = __webpack_require__(8);
 
 
 
+let matchOriginKeyRE = /[_$*a-zA-Z0-9]*/
 /**
  * 为了欺骗 Vue-devtool 而构造的 store
  */
@@ -10732,9 +10739,9 @@ const store = {
  * key 值映射
  */
 const keyMap = Object.create(null)
-/* harmony export (immutable) */ __webpack_exports__["a"] = keyMap;
+/* unused harmony export keyMap */
 
-
+window.keyMap = keyMap
 /**
  * 更新 store
  * @param {store} store
@@ -10743,6 +10750,7 @@ const keyMap = Object.create(null)
 function updateStore (store, $vm) {
   store.state = getStates($vm)
   store.getters = getGetters($vm)
+  setKeyMap(store.state, keyMap)
 }
 
 /**
@@ -10756,14 +10764,40 @@ function getStates ($vm, path = '') {
   for (let key in $vm._data) {
     const finalKey = getFinalKey(key, path)
     // 只需要拿到第一层的映射即可
-    path === '' && (keyMap[finalKey] = key)
-    if (Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])($vm._data[key])) {
+    let result = false
+    if (result = Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])($vm._data[key])) {
       states[finalKey] = getStates({_data: $vm._data[key]}, path + key + '.')
     } else {
       states[finalKey] = $vm._data[key]
     }
   }
   return states
+}
+
+/**
+ * 设置映射
+ * @param {object} states 状态值
+ * @param {object} keyMap 当前映射值
+ */
+function setKeyMap (states, keyMap) {
+  for (let key in states) {
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(states[key])) {
+      keyMap[key] = {
+        _key: getOriginKey(key)
+      }
+      setKeyMap(states[key], keyMap[key])
+    } else {
+      keyMap[key] = getOriginKey(key)
+    }
+  }
+}
+/**
+ * 获取原始键名
+ * @param {string} key
+ * @return {string}
+ */
+function getOriginKey (key) {
+  return key.match(matchOriginKeyRE)[0]
 }
 
 /**
@@ -10790,9 +10824,33 @@ function getFinalKey (key, path = '') {
   path += key
   const comment = Object(__WEBPACK_IMPORTED_MODULE_1__comments__["b" /* getFinalComment */])(path.split('.'))
   if (comment !== '') {
-    return `${key} (${comment})`
+    return makeCommentKey(key, comment)
   }
   return key
+}
+/**
+ * 制作带有注释的键名
+ * @param {string} key 键名
+ * @param {string} comment 注释
+ * @return {string}
+ */
+function makeCommentKey (key, comment) {
+  return `${key} (${comment})`
+}
+/**
+ * 将时间遍历到目标上
+ * @param {vm} 
+ * @param {object} travelState 
+ */
+function setStateFromTravel ($vm, travelState) {
+  for (let key in travelState) {
+    const currentState = travelState[key]
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(currentState)) {
+      // $vm[keyMap[key]._key] && setStateFromTravel($vm[keyMap[key]._key], travelState[key])
+    } else {
+      $vm[keyMap[key]] = travelState[key]
+    }
+  }
 }
 
 /***/ }),
@@ -10801,13 +10859,14 @@ function getFinalKey (key, path = '') {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = getFinalComment;
+/* unused harmony export aa */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
 
 
 /**
  * 私有注释对象
  */
-const _comments = {}
+const _comments = Object.create(null)
 /* harmony export (immutable) */ __webpack_exports__["a"] = _comments;
 
 
@@ -10832,6 +10891,12 @@ function getFinalComment (paths) {
 
   return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(current) ? current._comment : current
 }
+
+function aa () {
+  
+}
+
+window.aa = aa
 
 /***/ })
 /******/ ]);
