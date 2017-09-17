@@ -10,6 +10,11 @@ export const store = {
 }
 
 /**
+ * key 值映射
+ */
+export const keyMap = Object.create(null)
+
+/**
  * 更新 store
  * @param {store} store
  * @param {vm}
@@ -28,10 +33,13 @@ export function updateStore (store, $vm) {
 function getStates ($vm, path = '') {
   const states = {}
   for (let key in $vm._data) {
+    const finalKey = getFinalKey(key, path)
+    // 只需要拿到第一层的映射即可
+    path === '' && (keyMap[finalKey] = key)
     if (isObject($vm._data[key])) {
-      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
+      states[finalKey] = getStates({_data: $vm._data[key]}, path + key + '.')
     } else {
-      states[getFinalKey(key, path)] = $vm._data[key]
+      states[finalKey] = $vm._data[key]
     }
   }
   return states
@@ -45,7 +53,8 @@ function getStates ($vm, path = '') {
 function getGetters ($vm) {
   const getters = {}
   for (let key in $vm.$options.computed) {
-    getters[getFinalKey(key)] = $vm.$options.computed[key].call($vm)
+    const finalKey = getFinalKey(key)
+    getters[finalKey] = $vm.$options.computed[key].call($vm)
   }
   return getters
 }

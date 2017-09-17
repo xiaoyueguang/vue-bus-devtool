@@ -10565,8 +10565,8 @@ module.exports = g;
  * @param {vm} $vm
  */
 function create ($vm) {
-  Object(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* store */], $vm)
-  __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:init', __WEBPACK_IMPORTED_MODULE_2__store__["a" /* store */])
+  Object(__WEBPACK_IMPORTED_MODULE_2__store__["c" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */], $vm)
+  __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:init', __WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */])
 }
 /**
  * 更新
@@ -10575,7 +10575,7 @@ function create ($vm) {
 function update ($vm) {
   if ($vm.__replaceState) return false
   Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => {
-    Object(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* store */], $vm)
+    Object(__WEBPACK_IMPORTED_MODULE_2__store__["c" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */], $vm)
 
     __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:mutation', {
       type: 'UPDATE-DATA',
@@ -10585,7 +10585,7 @@ function update ($vm) {
   })
 }
 
-
+window.keyMap = __WEBPACK_IMPORTED_MODULE_2__store__["a" /* keyMap */]
 /**
  * 开启时间旅行
  * @param {vm} $vm
@@ -10596,7 +10596,7 @@ function openTravel ($vm) {
     $vm.__replaceState = true
     // 替换 state来实现时间旅行
     for (let key in targetState) {
-      $vm[key] = targetState[key]
+      $vm[__WEBPACK_IMPORTED_MODULE_2__store__["a" /* keyMap */][key]] = targetState[key]
     }
     $vm.__replaceState = false
   })
@@ -10672,7 +10672,7 @@ const devtoolHook =
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = updateStore;
+/* harmony export (immutable) */ __webpack_exports__["c"] = updateStore;
 /* unused harmony export getFinalKey */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__comments__ = __webpack_require__(8);
@@ -10686,7 +10686,14 @@ const store = {
   state: {},
   getters: {}
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = store;
+/* harmony export (immutable) */ __webpack_exports__["b"] = store;
+
+
+/**
+ * key 值映射
+ */
+const keyMap = Object.create(null)
+/* harmony export (immutable) */ __webpack_exports__["a"] = keyMap;
 
 
 /**
@@ -10708,10 +10715,13 @@ function updateStore (store, $vm) {
 function getStates ($vm, path = '') {
   const states = {}
   for (let key in $vm._data) {
+    const finalKey = getFinalKey(key, path)
+    // 只需要拿到第一层的映射即可
+    path === '' && (keyMap[finalKey] = key)
     if (Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])($vm._data[key])) {
-      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
+      states[finalKey] = getStates({_data: $vm._data[key]}, path + key + '.')
     } else {
-      states[getFinalKey(key, path)] = $vm._data[key]
+      states[finalKey] = $vm._data[key]
     }
   }
   return states
@@ -10725,7 +10735,8 @@ function getStates ($vm, path = '') {
 function getGetters ($vm) {
   const getters = {}
   for (let key in $vm.$options.computed) {
-    getters[getFinalKey(key)] = $vm.$options.computed[key].call($vm)
+    const finalKey = getFinalKey(key)
+    getters[finalKey] = $vm.$options.computed[key].call($vm)
   }
   return getters
 }

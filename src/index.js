@@ -8,7 +8,8 @@ import devtoolHook from './devtool'
 
 import {
   store,
-  updateStore
+  updateStore,
+  keyMap
 } from './store'
 
 import {_comments} from './comments'
@@ -38,7 +39,7 @@ function update ($vm) {
   })
 }
 
-
+window.keyMap = keyMap
 /**
  * 开启时间旅行
  * @param {vm} $vm
@@ -49,7 +50,7 @@ function openTravel ($vm) {
     $vm.__replaceState = true
     // 替换 state来实现时间旅行
     for (let key in targetState) {
-      $vm[key] = targetState[key]
+      $vm[keyMap[key]] = targetState[key]
     }
     $vm.__replaceState = false
   })
