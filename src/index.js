@@ -1,27 +1,24 @@
+import {
+  delay,
+  toString,
+  isObject
+} from './helper'
 
-// vue-devtool 全局钩子函数
-const devtoolHook =
-  typeof window !== 'undefined' &&
-  window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+import devtoolHook from './devtool'
 
-const toString = Object.prototype.toString
+import {
+  store,
+  updateStore
+} from './store'
 
-const isObject = obj => toString.call(obj) === '[object Object]'
-
-const store = {
-  state: {},
-  getters: {}
-}
-
-const _comments = {}
+import {_comments} from './comments'
 
 /**
  * 初始化
  * @param {vm} $vm
  */
 function create ($vm) {
-  store.state = getStates($vm)
-  store.getters = getGetters($vm)
+  updateStore(store, $vm)
   devtoolHook.emit('vuex:init', store)
 }
 /**
@@ -31,8 +28,8 @@ function create ($vm) {
 function update ($vm) {
   if ($vm.__replaceState) return false
   delay(() => {
-    store.state = getStates($vm)
-    store.getters = getGetters($vm)
+    updateStore(store, $vm)
+
     devtoolHook.emit('vuex:mutation', {
       type: 'UPDATE-DATA',
       // TODO: 以后最好加个 可以监测到是谁在变化
@@ -40,73 +37,8 @@ function update ($vm) {
     })
   })
 }
-/**
- * 获取最终的 key 值
- * @param {string} key 键值
- * @param {string} path  路径
- * @return {string} 最终的 key 值
- */
-function getFinalKey (key, path = '') {
-  path += key
-  const comment = getFinalComment(path.split('.'))
-  if (comment !== '') {
-    return `${key} (${comment})`
-  }
-  return key
-}
-/**
- * 获取最终的注释
- * @param {string} paths 路径
- * @return {string} 注释
- */
-function getFinalComment (paths) {
-  if (paths.length === 1) {
-    let comment = _comments[paths[0]]
-    return isObject(comment) ? comment._comment : comment || ''
-  }
 
-  let comment = ''
-  let current = _comments
-  let i = 0
-  while (++i) {
-    current = current[paths[i - 1]] || ''
-    if (i === paths.length) break
-  }
 
-  return isObject(current) ? current._comment : current
-
-}
-
-/**
- * 获取对应的 states
- * @param {vm}
- * @param {string} path 路径
- * @return {states}
- */
-function getStates ($vm, path = '') {
-  const states = {}
-  for (let key in $vm._data) {
-    if (isObject($vm._data[key])) {
-      states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
-    } else {
-      states[getFinalKey(key, path)] = $vm._data[key]
-    }
-  }
-  return states
-}
-
-/**
- * 获取对应的 getters
- * @param {vm}
- * @return {getters}
- */
-function getGetters ($vm) {
-  const getters = {}
-  for (let key in $vm.$options.computed) {
-    getters[getFinalKey(key)] = $vm.$options.computed[key].call($vm)
-  }
-  return getters
-}
 /**
  * 开启时间旅行
  * @param {vm} $vm
@@ -121,14 +53,6 @@ function openTravel ($vm) {
     }
     $vm.__replaceState = false
   })
-}
-
-/**
- * 延迟执行
- * @param {function} fn
- */
-function delay (fn) {
-  setTimeout(fn)
 }
 
 export default {

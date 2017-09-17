@@ -10548,31 +10548,25 @@ module.exports = g;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-// vue-devtool 全局钩子函数
-const devtoolHook =
-  typeof window !== 'undefined' &&
-  window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__devtool__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__comments__ = __webpack_require__(8);
 
-const toString = Object.prototype.toString
 
-const isObject = obj => toString.call(obj) === '[object Object]'
 
-const store = {
-  state: {},
-  getters: {}
-}
 
-const _comments = {}
+
+
+
 
 /**
  * 初始化
  * @param {vm} $vm
  */
 function create ($vm) {
-  store.state = getStates($vm)
-  store.getters = getGetters($vm)
-  devtoolHook.emit('vuex:init', store)
+  Object(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* store */], $vm)
+  __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:init', __WEBPACK_IMPORTED_MODULE_2__store__["a" /* store */])
 }
 /**
  * 更新
@@ -10580,51 +10574,129 @@ function create ($vm) {
  */
 function update ($vm) {
   if ($vm.__replaceState) return false
-  delay(() => {
-    store.state = getStates($vm)
-    store.getters = getGetters($vm)
-    devtoolHook.emit('vuex:mutation', {
+  Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => {
+    Object(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* store */], $vm)
+
+    __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:mutation', {
       type: 'UPDATE-DATA',
       // TODO: 以后最好加个 可以监测到是谁在变化
       payload: undefined
     })
   })
 }
+
+
 /**
- * 获取最终的 key 值
- * @param {string} key 键值
- * @param {string} path  路径
- * @return {string} 最终的 key 值
+ * 开启时间旅行
+ * @param {vm} $vm
  */
-function getFinalKey (key, path = '') {
-  path += key
-  const comment = getFinalComment(path.split('.'))
-  if (comment !== '') {
-    return `${key} (${comment})`
-  }
-  return key
+function openTravel ($vm) {
+  __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].on('vuex:travel-to-state', targetState => {
+    // 是否替换
+    $vm.__replaceState = true
+    // 替换 state来实现时间旅行
+    for (let key in targetState) {
+      $vm[key] = targetState[key]
+    }
+    $vm.__replaceState = false
+  })
 }
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  install (Vue, {vm, comments}) {
+    // 检测$bus 是否被占用. 并自动将 vm 附加到$bus 上
+    !Vue.prototype.$bus && (Vue.prototype.$bus = vm)
+    if (__WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */] && process.env.NODE_ENV !== 'production') {
+      Object.assign(__WEBPACK_IMPORTED_MODULE_3__comments__["a" /* _comments */], comments)
+  
+      Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => create(vm))
+  
+      openTravel(vm)
+  
+      vm.$watch(function () { return vm._data }, () => {
+        update(vm)
+      }, {
+        deep: true,
+        sync: true
+      })
+    }
+  }
+});
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = delay;
+
 /**
- * 获取最终的注释
- * @param {string} paths 路径
- * @return {string} 注释
+ * 延迟执行
+ * @param {function} fn
  */
-function getFinalComment (paths) {
-  if (paths.length === 1) {
-    let comment = _comments[paths[0]]
-    return isObject(comment) ? comment._comment : comment || ''
-  }
+function delay (fn) {
+  setTimeout(fn)
+}
 
-  let comment = ''
-  let current = _comments
-  let i = 0
-  while (++i) {
-    current = current[paths[i - 1]] || ''
-    if (i === paths.length) break
-  }
+const toString = Object.prototype.toString
+/* unused harmony export toString */
 
-  return isObject(current) ? current._comment : current
+/**
+ * 判断是否为对象
+ * @param {any}
+ * @return {boolean}
+ */
+const isObject = obj => toString.call(obj) === '[object Object]'
+/* harmony export (immutable) */ __webpack_exports__["b"] = isObject;
 
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// vue-devtool 全局钩子函数
+const devtoolHook =
+  typeof window !== 'undefined' &&
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+/* unused harmony export devtoolHook */
+
+
+/* harmony default export */ __webpack_exports__["a"] = (devtoolHook);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = updateStore;
+/* unused harmony export getFinalKey */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__comments__ = __webpack_require__(8);
+
+
+
+/**
+ * 为了欺骗 Vue-devtool 而构造的 store
+ */
+const store = {
+  state: {},
+  getters: {}
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = store;
+
+
+/**
+ * 更新 store
+ * @param {store} store
+ * @param {vm}
+ */
+function updateStore (store, $vm) {
+  store.state = getStates($vm)
+  store.getters = getGetters($vm)
 }
 
 /**
@@ -10636,7 +10708,7 @@ function getFinalComment (paths) {
 function getStates ($vm, path = '') {
   const states = {}
   for (let key in $vm._data) {
-    if (isObject($vm._data[key])) {
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])($vm._data[key])) {
       states[getFinalKey(key, path)] = getStates({_data: $vm._data[key]}, path + key + '.')
     } else {
       states[getFinalKey(key, path)] = $vm._data[key]
@@ -10657,52 +10729,59 @@ function getGetters ($vm) {
   }
   return getters
 }
-/**
- * 开启时间旅行
- * @param {vm} $vm
- */
-function openTravel ($vm) {
-  devtoolHook.on('vuex:travel-to-state', targetState => {
-    // 是否替换
-    $vm.__replaceState = true
-    // 替换 state来实现时间旅行
-    for (let key in targetState) {
-      $vm[key] = targetState[key]
-    }
-    $vm.__replaceState = false
-  })
-}
 
 /**
- * 延迟执行
- * @param {function} fn
+ * 获取最终的 key 值
+ * @param {string} key 键值
+ * @param {string} path  路径
+ * @return {string} 最终的 key 值
  */
-function delay (fn) {
-  setTimeout(fn)
-}
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-  install (Vue, {vm, comments}) {
-    // 检测$bus 是否被占用. 并自动将 vm 附加到$bus 上
-    !Vue.prototype.$bus && (Vue.prototype.$bus = vm)
-    if (devtoolHook && process.env.NODE_ENV !== 'production') {
-      Object.assign(_comments, comments)
-  
-      delay(() => create(vm))
-  
-      openTravel(vm)
-  
-      vm.$watch(function () { return vm._data }, () => {
-        update(vm)
-      }, {
-        deep: true,
-        sync: true
-      })
-    }
+function getFinalKey (key, path = '') {
+  path += key
+  const comment = Object(__WEBPACK_IMPORTED_MODULE_1__comments__["b" /* getFinalComment */])(path.split('.'))
+  if (comment !== '') {
+    return `${key} (${comment})`
   }
-});
+  return key
+}
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = getFinalComment;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
+
+
+/**
+ * 私有注释对象
+ */
+const _comments = {}
+/* harmony export (immutable) */ __webpack_exports__["a"] = _comments;
+
+
+/**
+ * 获取最终的注释
+ * @param {string} paths 路径
+ * @return {string} 注释
+ */
+function getFinalComment (paths) {
+  if (paths.length === 1) {
+    let comment = _comments[paths[0]]
+    return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(comment) ? comment._comment : comment || ''
+  }
+
+  let comment = ''
+  let current = _comments
+  let i = 0
+  while (++i) {
+    current = current[paths[i - 1]] || ''
+    if (i === paths.length) break
+  }
+
+  return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(current) ? current._comment : current
+}
 
 /***/ })
 /******/ ]);
