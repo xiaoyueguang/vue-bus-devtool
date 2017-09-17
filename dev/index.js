@@ -29,7 +29,7 @@ setInterval(() => {
   } else {
     open = false
   }
-}, 300)
+}, 500)
 
 const comments = {
   i: '计数',

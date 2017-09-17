@@ -292,7 +292,7 @@ setInterval(() => {
   } else {
     open = false
   }
-}, 300)
+}, 500)
 
 const comments = {
   i: '计数',
@@ -10575,17 +10575,17 @@ function create ($vm) {
 function update ($vm) {
   if ($vm.__replaceState) return false
   Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => {
+    const before = __WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */].state
     Object(__WEBPACK_IMPORTED_MODULE_2__store__["c" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */], $vm)
+    const after = __WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */].state
 
     __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:mutation', {
       type: 'UPDATE-DATA',
-      // TODO: 以后最好加个 可以监测到是谁在变化
-      payload: undefined
+      payload: Object(__WEBPACK_IMPORTED_MODULE_0__helper__["c" /* objDiff */])(before, after)
     })
   })
 }
 
-window.keyMap = __WEBPACK_IMPORTED_MODULE_2__store__["a" /* keyMap */]
 /**
  * 开启时间旅行
  * @param {vm} $vm
@@ -10631,6 +10631,8 @@ function openTravel ($vm) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = delay;
+/* harmony export (immutable) */ __webpack_exports__["c"] = objDiff;
+/* unused harmony export isEmptyObject */
 
 /**
  * 延迟执行
@@ -10652,6 +10654,43 @@ const isObject = obj => toString.call(obj) === '[object Object]'
 /* harmony export (immutable) */ __webpack_exports__["b"] = isObject;
 
 
+/**
+ * 比较两个对象, 并返回不一样的部分的路径
+ * @param {object} before
+ * @param {object} after
+ * @return {string}
+ */
+function objDiff (before, after) {
+  const diffObj = Object.create(null)
+  for (let key in after) {
+    const beforeValue = before[key]
+    const afterValue = after[key]
+    if (isObject(afterValue)) {
+      const sunDiffObj = objDiff(beforeValue, afterValue)
+      !isEmptyObject(sunDiffObj) && (diffObj[key] = sunDiffObj)
+    } else {
+      if (beforeValue !== afterValue) {
+        diffObj[key] = beforeValue + ' => ' + afterValue
+      }
+    }
+  }
+  return diffObj
+}
+
+
+/**
+ * 判断对象是否为空
+ * @param {object} obj 
+ */
+function isEmptyObject (obj) {
+  let key
+  for (key in obj) {
+    return key
+  }
+  return false
+}
+
+window.aaa = isEmptyObject
 
 /***/ }),
 /* 6 */
@@ -10683,8 +10722,8 @@ const devtoolHook =
  * 为了欺骗 Vue-devtool 而构造的 store
  */
 const store = {
-  state: {},
-  getters: {}
+  state: Object.create(null),
+  getters: Object.create(null)
 }
 /* harmony export (immutable) */ __webpack_exports__["b"] = store;
 

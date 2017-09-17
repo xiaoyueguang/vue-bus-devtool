@@ -5,8 +5,8 @@ import {getFinalComment} from './comments'
  * 为了欺骗 Vue-devtool 而构造的 store
  */
 export const store = {
-  state: {},
-  getters: {}
+  state: Object.create(null),
+  getters: Object.create(null)
 }
 
 /**

@@ -1,7 +1,8 @@
 import {
   delay,
   toString,
-  isObject
+  isObject,
+  objDiff
 } from './helper'
 
 import devtoolHook from './devtool'
@@ -29,17 +30,17 @@ function create ($vm) {
 function update ($vm) {
   if ($vm.__replaceState) return false
   delay(() => {
+    const before = store.state
     updateStore(store, $vm)
+    const after = store.state
 
     devtoolHook.emit('vuex:mutation', {
       type: 'UPDATE-DATA',
-      // TODO: 以后最好加个 可以监测到是谁在变化
-      payload: undefined
+      payload: objDiff(before, after)
     })
   })
 }
 
-window.keyMap = keyMap
 /**
  * 开启时间旅行
  * @param {vm} $vm

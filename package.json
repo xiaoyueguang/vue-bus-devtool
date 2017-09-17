@@ -1,7 +1,7 @@
 {
   "name": "vue-bus-devtool",
-  "version": "1.0.2",
-  "description": "",
+  "version": "1.0.3",
+  "description": "更好的在 vue-devtools 中调试 vue bus",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha test/index.test.js",
