@@ -108,7 +108,7 @@ export function getFinalKey (key, path = '') {
  * @return {string}
  */
 export function makeCommentKey (key, comment) {
-  return `${key} (${comment})`
+  return comment ? `${key} (${comment})` : key
 }
 /**
  * 将时间遍历到目标上

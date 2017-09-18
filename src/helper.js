@@ -46,9 +46,9 @@ export function objDiff (before, after) {
 export function isEmptyObject (obj) {
   let key
   for (key in obj) {
-    return key
+    return !key
   }
-  return false
+  return true
 }
 
 window.aaa = isEmptyObject

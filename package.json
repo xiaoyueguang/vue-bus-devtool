@@ -1,6 +1,6 @@
 {
   "name": "vue-bus-devtool",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "更好的在 vue-devtools 中调试 vue bus",
   "main": "src/index.js",
   "scripts": {
