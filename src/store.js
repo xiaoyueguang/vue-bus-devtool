@@ -115,13 +115,28 @@ export function makeCommentKey (key, comment) {
  * @param {vm} 
  * @param {object} travelState 
  */
-export function setStateFromTravel ($vm, travelState) {
+export function setStateFromTravel ($vm, travelState, path = '', _keyMap = keyMap) {
   for (let key in travelState) {
     const currentState = travelState[key]
     if (isObject(currentState)) {
-      // $vm[keyMap[key]._key] && setStateFromTravel($vm[keyMap[key]._key], travelState[key])
+      setStateFromTravel($vm, travelState[key], path + _keyMap[key]._key + '.', _keyMap[key])
     } else {
-      $vm[keyMap[key]] = travelState[key]
+      const fn = fnInit($vm, travelState, path, _keyMap[key], key)
+      fn($vm, travelState)
     }
   }
+}
+
+/**
+ * 生成执行方法
+ * @param {vm} $vm 
+ * @param {object} travelState 当前替换状态
+ * @param {string} path 路径
+ * @param {string} key 原生键值
+ * @param {string} key1 带注释键值
+ * @return {function}
+ */
+function fnInit ($vm, travelState, path, key, key1) {
+  const execString = `$vm.${path}${key} = travelState['${key1}']`
+  return new Function ('$vm, travelState', execString)
 }

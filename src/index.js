@@ -29,7 +29,7 @@ function create ($vm) {
  * @param {vm} $vm
  */
 function update ($vm) {
-  if ($vm.__replaceState) return false
+  if ($vm.__replaceLock) return false
   delay(() => {
     const before = store.state
     updateStore(store, $vm)
@@ -49,15 +49,11 @@ function update ($vm) {
  */
 function openTravel ($vm) {
   devtoolHook.on('vuex:travel-to-state', targetState => {
-    // 是否替换
-    $vm.__replaceState = true
+    // 决定是否替换的锁
+    $vm.__replaceLock = true
     // 替换 state来实现时间旅行
-    // for (let key in targetState) {
-    //   // TODO:
-    //   $vm[keyMap[key]] = targetState[key]
-    // }
     setStateFromTravel($vm, targetState)
-    $vm.__replaceState = false
+    $vm.__replaceLock = false
   })
 }
 
@@ -69,8 +65,7 @@ export default {
       Object.assign(_comments, comments)
   
       delay(() => create(vm))
-      // TODO: 这里替换会有点问题
-      // openTravel(vm)
+      openTravel(vm)
   
       vm.$watch(function () { return vm._data }, () => {
         update(vm)

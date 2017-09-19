@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -258,9 +258,121 @@ process.umask = function() { return 0; };
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = delay;
+/* unused harmony export objDiff */
+/* unused harmony export isEmptyObject */
+
+/**
+ * 延迟执行
+ * @param {function} fn
+ */
+function delay (fn) {
+  setTimeout(fn)
+}
+
+const toString = Object.prototype.toString
+/* unused harmony export toString */
+
+/**
+ * 判断是否为对象
+ * @param {any}
+ * @return {boolean}
+ */
+const isObject = obj => toString.call(obj) === '[object Object]'
+/* harmony export (immutable) */ __webpack_exports__["b"] = isObject;
+
+
+/**
+ * 比较两个对象, 并返回不一样的部分的路径
+ * @param {object} before
+ * @param {object} after
+ * @return {string}
+ */
+function objDiff (before, after) {
+  const diffObj = Object.create(null)
+  for (let key in after) {
+    const beforeValue = before[key]
+    const afterValue = after[key]
+    if (isObject(afterValue)) {
+      const sunDiffObj = objDiff(beforeValue, afterValue)
+      !isEmptyObject(sunDiffObj) && (diffObj[key] = sunDiffObj)
+    } else {
+      if (beforeValue !== afterValue) {
+        diffObj[key] = beforeValue + ' => ' + afterValue
+      }
+    }
+  }
+  return diffObj
+}
+
+
+/**
+ * 判断对象是否为空
+ * @param {object} obj 
+ */
+function isEmptyObject (obj) {
+  let key
+  for (key in obj) {
+    return !key
+  }
+  return true
+}
+
+window.aaa = isEmptyObject
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = getFinalComment;
+/* unused harmony export aa */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(1);
+
+
+/**
+ * 私有注释对象
+ */
+const _comments = Object.create(null)
+/* harmony export (immutable) */ __webpack_exports__["a"] = _comments;
+
+
+/**
+ * 获取最终的注释
+ * @param {string} paths 路径
+ * @return {string} 注释
+ */
+function getFinalComment (paths) {
+  if (paths.length === 1) {
+    let comment = _comments[paths[0]]
+    return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(comment) ? comment._comment : comment || ''
+  }
+
+  let comment = ''
+  let current = _comments
+  let i = 0
+  while (++i) {
+    current = current[paths[i - 1]] || ''
+    if (i === paths.length) break
+  }
+
+  return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(current) ? current._comment : current
+}
+
+function aa () {
+  
+}
+
+window.aa = aa
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_index__ = __webpack_require__(4);
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_index__ = __webpack_require__(6);
 
 
 
@@ -273,9 +385,11 @@ const bus = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default
       for: {
         bar: false,
         for: {
-          bar: 123
+          bar: 123,
+          items: ['子item 0']
         }
-      }
+      },
+      items: [0]
     }
   },
   computed: {
@@ -289,10 +403,14 @@ let open = true
 setInterval(() => {
   if (bus.i < 5 && open) {
     bus.i ++
+    bus.for.bar = bus.i % 2 === 0
+    bus.for.for.bar = Math.random().toString().substr(3, 2)
+    Math.random() > 0.2 && bus.items.push(bus.items.length)
+    Math.random() > 0.2 && bus.for.for.items.push(`子item ${bus.items.length}`)
   } else {
     open = false
   }
-}, 500)
+}, 100)
 
 const comments = {
   i: '计数',
@@ -304,8 +422,12 @@ const comments = {
       _comment: '第二层for',
       bar: '第三层bar'
     }
-  }
+  },
+  items: '列表数据'
 }
+
+if (Math.random() > 0.5) comments.for._comment = null
+if (Math.random() > 0.5) comments.for.for.bar = null
 
 // devtool(bus, comments)
 __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* default */], {
@@ -319,7 +441,7 @@ window.vm = new __WEBPACK_IMPORTED_MODULE_0_vue_dist_vue_esm_js__["a" /* default
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10514,10 +10636,10 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0), __webpack_require__(5)))
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
 var g;
@@ -10544,14 +10666,14 @@ module.exports = g;
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__devtool__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__comments__ = __webpack_require__(8);
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__devtool__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__comments__ = __webpack_require__(2);
 
 
 
@@ -10573,7 +10695,7 @@ function create ($vm) {
  * @param {vm} $vm
  */
 function update ($vm) {
-  if ($vm.__replaceState) return false
+  if ($vm.__replaceLock) return false
   Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => {
     const before = __WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */].state
     Object(__WEBPACK_IMPORTED_MODULE_2__store__["c" /* updateStore */])(__WEBPACK_IMPORTED_MODULE_2__store__["b" /* store */], $vm)
@@ -10593,15 +10715,11 @@ function update ($vm) {
  */
 function openTravel ($vm) {
   __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].on('vuex:travel-to-state', targetState => {
-    // 是否替换
-    $vm.__replaceState = true
+    // 决定是否替换的锁
+    $vm.__replaceLock = true
     // 替换 state来实现时间旅行
-    // for (let key in targetState) {
-    //   // TODO:
-    //   $vm[keyMap[key]] = targetState[key]
-    // }
     Object(__WEBPACK_IMPORTED_MODULE_2__store__["a" /* setStateFromTravel */])($vm, targetState)
-    $vm.__replaceState = false
+    $vm.__replaceLock = false
   })
 }
 
@@ -10613,8 +10731,7 @@ function openTravel ($vm) {
       Object.assign(__WEBPACK_IMPORTED_MODULE_3__comments__["a" /* _comments */], comments)
   
       Object(__WEBPACK_IMPORTED_MODULE_0__helper__["a" /* delay */])(() => create(vm))
-      // TODO: 这里替换会有点问题
-      // openTravel(vm)
+      openTravel(vm)
   
       vm.$watch(function () { return vm._data }, () => {
         update(vm)
@@ -10629,74 +10746,7 @@ function openTravel ($vm) {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = delay;
-/* unused harmony export objDiff */
-/* unused harmony export isEmptyObject */
-
-/**
- * 延迟执行
- * @param {function} fn
- */
-function delay (fn) {
-  setTimeout(fn)
-}
-
-const toString = Object.prototype.toString
-/* unused harmony export toString */
-
-/**
- * 判断是否为对象
- * @param {any}
- * @return {boolean}
- */
-const isObject = obj => toString.call(obj) === '[object Object]'
-/* harmony export (immutable) */ __webpack_exports__["b"] = isObject;
-
-
-/**
- * 比较两个对象, 并返回不一样的部分的路径
- * @param {object} before
- * @param {object} after
- * @return {string}
- */
-function objDiff (before, after) {
-  const diffObj = Object.create(null)
-  for (let key in after) {
-    const beforeValue = before[key]
-    const afterValue = after[key]
-    if (isObject(afterValue)) {
-      const sunDiffObj = objDiff(beforeValue, afterValue)
-      !isEmptyObject(sunDiffObj) && (diffObj[key] = sunDiffObj)
-    } else {
-      if (beforeValue !== afterValue) {
-        diffObj[key] = beforeValue + ' => ' + afterValue
-      }
-    }
-  }
-  return diffObj
-}
-
-
-/**
- * 判断对象是否为空
- * @param {object} obj 
- */
-function isEmptyObject (obj) {
-  let key
-  for (key in obj) {
-    return key
-  }
-  return false
-}
-
-window.aaa = isEmptyObject
-
-/***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10710,7 +10760,7 @@ const devtoolHook =
 /* harmony default export */ __webpack_exports__["a"] = (devtoolHook);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10719,8 +10769,8 @@ const devtoolHook =
 /* unused harmony export getFinalKey */
 /* unused harmony export makeCommentKey */
 /* harmony export (immutable) */ __webpack_exports__["a"] = setStateFromTravel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__comments__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__comments__ = __webpack_require__(2);
 
 
 
@@ -10835,68 +10885,38 @@ function getFinalKey (key, path = '') {
  * @return {string}
  */
 function makeCommentKey (key, comment) {
-  return `${key} (${comment})`
+  return comment ? `${key} (${comment})` : key
 }
 /**
  * 将时间遍历到目标上
  * @param {vm} 
  * @param {object} travelState 
  */
-function setStateFromTravel ($vm, travelState) {
+function setStateFromTravel ($vm, travelState, path = '', _keyMap = keyMap) {
   for (let key in travelState) {
     const currentState = travelState[key]
     if (Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(currentState)) {
-      // $vm[keyMap[key]._key] && setStateFromTravel($vm[keyMap[key]._key], travelState[key])
+      setStateFromTravel($vm, travelState[key], path + _keyMap[key]._key + '.', _keyMap[key])
     } else {
-      $vm[keyMap[key]] = travelState[key]
+      const fn = fnInit($vm, travelState, path, _keyMap[key], key)
+      fn($vm, travelState)
     }
   }
 }
 
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = getFinalComment;
-/* unused harmony export aa */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper__ = __webpack_require__(5);
-
-
 /**
- * 私有注释对象
+ * 生成执行方法
+ * @param {vm} $vm 
+ * @param {object} travelState 当前替换状态
+ * @param {string} path 路径
+ * @param {string} key 原生键值
+ * @param {string} key1 带注释键值
+ * @return {function}
  */
-const _comments = Object.create(null)
-/* harmony export (immutable) */ __webpack_exports__["a"] = _comments;
-
-
-/**
- * 获取最终的注释
- * @param {string} paths 路径
- * @return {string} 注释
- */
-function getFinalComment (paths) {
-  if (paths.length === 1) {
-    let comment = _comments[paths[0]]
-    return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(comment) ? comment._comment : comment || ''
-  }
-
-  let comment = ''
-  let current = _comments
-  let i = 0
-  while (++i) {
-    current = current[paths[i - 1]] || ''
-    if (i === paths.length) break
-  }
-
-  return Object(__WEBPACK_IMPORTED_MODULE_0__helper__["b" /* isObject */])(current) ? current._comment : current
+function fnInit ($vm, travelState, path, key, key1) {
+  const execString = `$vm.${path}${key} = travelState['${key1}']`
+  return new Function ('$vm, travelState', execString)
 }
-
-function aa () {
-  
-}
-
-window.aa = aa
 
 /***/ })
 /******/ ]);
