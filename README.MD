@@ -49,3 +49,7 @@ Vue.use(devtool, {
 ![](./images/interface.png)
 
 可通过点击[该链接](https://xiaoyueguang.github.io/vue-bus-devtool/dev/index.html)按`F12`查看
+
+<video controls="controls">
+  <source src="//oe1lgo2hg.bkt.clouddn.com/vue-bus-devtool.mov"/>
+</video>

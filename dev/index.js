@@ -28,14 +28,14 @@ let open = true
 setInterval(() => {
   if (bus.i < 5 && open) {
     bus.i ++
-    bus.for.bar = bus.i % 2 === 0
-    bus.for.for.bar = Math.random().toString().substr(3, 2)
-    Math.random() > 0.2 && bus.items.push(bus.items.length)
-    Math.random() > 0.2 && bus.for.for.items.push(`子item ${bus.items.length}`)
+    // bus.for.bar = bus.i % 2 === 0
+    // bus.for.for.bar = Math.random().toString().substr(3, 2)
+    // Math.random() > 0.2 && bus.items.push(bus.items.length)
+    // Math.random() > 0.2 && bus.for.for.items.push(`子item ${bus.items.length}`)
   } else {
     open = false
   }
-}, 100)
+}, 1000)
 
 const comments = {
   i: '计数',
