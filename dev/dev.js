@@ -259,7 +259,7 @@ process.umask = function() { return 0; };
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = delay;
-/* unused harmony export objDiff */
+/* harmony export (immutable) */ __webpack_exports__["c"] = objDiff;
 /* unused harmony export isEmptyObject */
 
 /**
@@ -10703,8 +10703,7 @@ function update ($vm) {
 
     __WEBPACK_IMPORTED_MODULE_1__devtool__["a" /* default */].emit('vuex:mutation', {
       type: 'UPDATE-DATA',
-      // payload: objDiff(before, after)
-      payload: undefined
+      payload: Object(__WEBPACK_IMPORTED_MODULE_0__helper__["c" /* objDiff */])(before, after)
     })
   })
 }

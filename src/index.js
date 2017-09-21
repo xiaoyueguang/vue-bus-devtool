@@ -37,8 +37,7 @@ function update ($vm) {
 
     devtoolHook.emit('vuex:mutation', {
       type: 'UPDATE-DATA',
-      // payload: objDiff(before, after)
-      payload: undefined
+      payload: objDiff(before, after)
     })
   })
 }
