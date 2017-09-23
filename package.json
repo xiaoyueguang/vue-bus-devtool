@@ -1,8 +1,11 @@
 {
   "name": "vue-bus-devtool",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "更好的在 vue-devtools 中调试 vue bus",
   "main": "src/index.js",
+  "file": [
+    "src"
+  ],
   "scripts": {
     "test": "mocha test/index.test.js",
     "dev": "webpack -w --config dev/dev.config.js",
