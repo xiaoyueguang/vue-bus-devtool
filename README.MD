@@ -1,4 +1,7 @@
 # vue-bus-devtools
+
+> author: linjilei@qq.com
+
 更好的在 vue-devtools 中调试 vue bus
 
 当应用变得很大时, 我们可能会引用 `Vuex` 来进行状态整理, 在`vue-devtools`上可以很清楚的看到`vuex`的各项数据以及突变.

@@ -16,7 +16,6 @@ export function getFinalComment (paths) {
     return isObject(comment) ? comment._comment : comment || ''
   }
 
-  let comment = ''
   let current = _comments
   let i = 0
   while (++i) {
@@ -26,9 +25,3 @@ export function getFinalComment (paths) {
 
   return isObject(current) ? current._comment : current
 }
-
-export function aa () {
-  
-}
-
-window.aa = aa

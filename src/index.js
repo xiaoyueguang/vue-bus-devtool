@@ -1,7 +1,5 @@
 import {
   delay,
-  toString,
-  isObject,
   objDiff
 } from './helper'
 
@@ -10,7 +8,6 @@ import devtoolHook from './devtool'
 import {
   store,
   updateStore,
-  keyMap,
   setStateFromTravel
 } from './store'
 
